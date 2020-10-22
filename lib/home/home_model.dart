@@ -22,7 +22,6 @@ class HomeNotifier extends ValueNotifier<HomeData> {
 
   uploadFile() async {
     final files = await pickOpenFiles();
-    print(files);
     if (files.length > 0) {
       for (final file in files) {
         value.fileList.add(FileItem(path: file));
