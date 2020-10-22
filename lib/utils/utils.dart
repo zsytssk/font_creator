@@ -10,7 +10,7 @@ import 'dart:convert';
 
 import 'package:font_creator/utils/genXml.dart';
 
-import '../model.dart';
+import '../home/home_model.dart';
 
 pickOpenFiles() {
   return showOpenPanel(
@@ -32,7 +32,7 @@ Future<List<String>> pickSaveFile(String fileType, {String filename}) {
   ).then((result) => result.paths);
 }
 
-combine(Model model) async {
+combine(HomeData model) async {
   final space = model.space;
 
   List<InputItem> imgList = [];

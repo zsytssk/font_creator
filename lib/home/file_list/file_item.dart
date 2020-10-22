@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:font_creator/components/on_hover_image.dart';
-import 'package:font_creator/model.dart' as Model;
+import 'package:font_creator/components/inherited_value_listener.dart';
+import 'package:font_creator/home/home_model.dart' as Model;
 
 class FileItem extends StatefulWidget {
   final Model.FileItem file;
-  final Model.Model model;
-  final Function updateModel;
-  FileItem({this.file, this.model, this.updateModel});
+  FileItem({this.file});
 
   @override
   _FileItemState createState() => _FileItemState();
@@ -19,9 +18,14 @@ class _FileItemState extends State<FileItem> {
 
   @override
   Widget build(BuildContext context) {
+    final model =
+        InheritedWidgetOnValueListener.of<Model.HomeData, Model.HomeNotifier>(
+                context)
+            .model as Model.HomeNotifier;
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: InkWell(
+        hoverColor: Colors.transparent,
         onTap: () {},
         onHover: (value) {
           if (value) {
@@ -48,7 +52,11 @@ class _FileItemState extends State<FileItem> {
                 children: [
                   Row(
                     children: [
-                      Image.file(File(widget.file.path), width: 60, height: 60),
+                      Image.file(
+                        File(widget.file.path),
+                        width: 60,
+                        height: 60,
+                      ),
                       SizedBox(width: 20),
                       Container(
                         width: 30,
@@ -79,8 +87,7 @@ class _FileItemState extends State<FileItem> {
                   if (isHover)
                     OnHoverImage(
                       onTap: () {
-                        widget.model.removeFile(widget.file);
-                        widget.updateModel();
+                        model.removeFile(widget.file);
                       },
                       width: 35,
                       height: 24,

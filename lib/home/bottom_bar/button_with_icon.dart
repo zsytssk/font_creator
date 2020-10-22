@@ -10,11 +10,12 @@ class ButtonWithIcon extends StatelessWidget {
   @override
   build(BuildContext context) {
     return RaisedButton(
+        padding: EdgeInsets.all(8),
         color: Colors.blue,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: Colors.white),
+            Icon(icon, color: Colors.white, size: 20),
             SizedBox(width: 8),
             Text(label, style: TextStyle(color: Colors.white))
           ],

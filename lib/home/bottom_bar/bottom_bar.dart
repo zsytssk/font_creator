@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:font_creator/bottom_bar/button_with_icon.dart';
+import 'package:font_creator/home/bottom_bar/button_with_icon.dart';
 import 'package:font_creator/components/radio_label.dart';
-import 'package:font_creator/model.dart';
+import 'package:font_creator/components/inherited_value_listener.dart';
+import 'package:font_creator/home/home_model.dart';
 import 'package:font_creator/utils/toast.dart';
 
 const textStyle = TextStyle(fontSize: 12);
 
 class BottomBar extends StatelessWidget {
-  final Model model;
-  final void Function() updateModel;
-
-  BottomBar({this.model, this.updateModel});
+  BottomBar();
 
   @override
   Widget build(BuildContext context) {
+    final inheritedWidget =
+        InheritedWidgetOnValueListener.of<HomeData, HomeNotifier>(context);
+    final model = inheritedWidget.model as HomeNotifier;
     return Row(
       children: [
         Container(
@@ -30,7 +31,7 @@ class BottomBar extends StatelessWidget {
                     child: TextField(
                       style: TextStyle(fontSize: 12),
                       controller: TextEditingController()
-                        ..text = model.fontSize.toString(),
+                        ..text = model.value.fontSize.toString(),
                       decoration: InputDecoration(
                           contentPadding:
                               const EdgeInsets.only(bottom: 18, top: 0),
@@ -44,22 +45,20 @@ class BottomBar extends StatelessWidget {
               Container(
                 child: RadioLabel(
                   value: FontType.XML,
-                  groupValue: model.fontType,
+                  groupValue: model.value.fontType,
                   label: 'XML(Laya)',
                   onChanged: (FontType value) {
                     model.setFontType(value);
-                    updateModel();
                   },
                 ),
               ),
               Container(
                 child: RadioLabel(
                   value: FontType.TEXT,
-                  groupValue: model.fontType,
+                  groupValue: model.value.fontType,
                   label: 'Text(Cocos2d)',
                   onChanged: (FontType value) {
                     model.setFontType(value);
-                    updateModel();
                   },
                 ),
               ),
@@ -84,12 +83,11 @@ class BottomBar extends StatelessWidget {
                               child: TextField(
                                 textAlign: TextAlign.center,
                                 controller: TextEditingController()
-                                  ..text = model.space.toString(),
+                                  ..text = model.value.space.toString(),
                                 decoration: InputDecoration(),
                                 keyboardType: TextInputType.number,
                                 onChanged: (value) {
                                   model.setSpace(int.parse(value));
-                                  updateModel();
                                 },
                               ),
                             ),
@@ -98,7 +96,6 @@ class BottomBar extends StatelessWidget {
                         InkWell(
                             onTap: () {
                               model.clear();
-                              updateModel();
                             },
                             child: Text('删除全部'))
                       ]),
@@ -115,13 +112,12 @@ class BottomBar extends StatelessWidget {
                                     child: ButtonWithIcon(
                                         onPressed: () {
                                           model.uploadFile().then((value) {
-                                            updateModel();
                                             return value;
                                           });
                                         },
                                         icon: Icons.add,
                                         label: '上传图片'))),
-                            SizedBox(width: 20),
+                            SizedBox(width: 10),
                             Expanded(
                                 flex: 1,
                                 child: SizedBox(
