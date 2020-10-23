@@ -40,6 +40,7 @@ class _FileItemState extends State<FileItem> {
         },
         child: DottedBorder(
           strokeWidth: 1,
+          color: Color(0x33333333),
           customPath: (size) {
             return Path()
               ..moveTo(0, size.height)

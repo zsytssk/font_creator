@@ -11,6 +11,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  HomeNotifier homeNotifier;
+  @override
+  initState() {
+    super.initState();
+    homeNotifier = HomeNotifier(HomeData());
+  }
+
   @override
   Widget build(BuildContext context) {
     final allHeight = MediaQuery.of(context).size.height -
@@ -24,8 +31,9 @@ class _MyHomePageState extends State<MyHomePage> {
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.white,
           body: InheritedWidgetOnValueListener(
-              model: HomeNotifier(HomeData()),
+              model: homeNotifier,
               builder: (BuildContext context, HomeData model, _) {
+                print('test:> $model');
                 return Container(
                   child: Column(children: [
                     Container(

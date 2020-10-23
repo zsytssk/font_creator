@@ -21,5 +21,5 @@ class InheritedWidgetOnValueListener<T, M extends ValueListenable<T>>
   }
 
   @override
-  bool updateShouldNotify(InheritedWidgetOnValueListener old) => true;
+  bool updateShouldNotify(InheritedWidgetOnValueListener old) => false;
 }

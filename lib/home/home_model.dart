@@ -10,6 +10,9 @@ class HomeData {
   int fontSize = 20;
   FontType fontType = FontType.XML;
   int space = 2;
+
+  @override
+  toString() => 'filelist: $fileList, fontSize: $fontSize, fontType: $fontType';
 }
 
 class HomeNotifier extends ValueNotifier<HomeData> {
