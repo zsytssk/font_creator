@@ -48,54 +48,47 @@ class _FileItemState extends State<FileItem> {
           },
           child: Container(
             padding: const EdgeInsets.all(8.0),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Image.file(
-                        File(widget.file.path),
-                        width: 60,
-                        height: 60,
-                      ),
-                      SizedBox(width: 20),
-                      Container(
-                        width: 30,
-                        height: 30,
-                        child: TextField(
-                          controller: TextEditingController()
-                            ..text = String.fromCharCode(widget.file.charcode),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.w600),
-                          decoration: const InputDecoration(
-                            contentPadding:
-                                const EdgeInsets.only(bottom: 13, top: 5),
-                          ),
-                          onChanged: (value) {
-                            widget.file.setChar(value);
-                          },
-                        ),
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/images/icon_grid.png"),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ],
+            child: ListTile(
+              leading: Image.file(
+                File(widget.file.path),
+                width: 60,
+                height: 60,
+              ),
+              title: Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  child: TextField(
+                    controller: TextEditingController()
+                      ..text = String.fromCharCode(widget.file.charcode),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+                    decoration: const InputDecoration(
+                      contentPadding: const EdgeInsets.only(bottom: 13, top: 5),
+                    ),
+                    onChanged: (value) {
+                      widget.file.setChar(value);
+                    },
                   ),
-                  if (isHover)
-                    OnHoverImage(
-                      onTap: () {
-                        model.removeFile(widget.file);
-                      },
-                      width: 35,
-                      height: 24,
-                      img1: "assets/images/icon_del_normal.png",
-                      img2: "assets/images/icon_del_hover.png",
-                    )
-                ]),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/icon_grid.png"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+              trailing: OnHoverImage(
+                onTap: () {
+                  model.removeFile(widget.file);
+                },
+                width: 35,
+                height: 24,
+                img1: "assets/images/icon_del_normal.png",
+                img2: "assets/images/icon_del_hover.png",
+              ),
+            ),
           ),
         ),
       ),
