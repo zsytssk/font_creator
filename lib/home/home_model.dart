@@ -5,8 +5,10 @@ import 'package:path/path.dart';
 
 enum FontType { XML, TEXT }
 
-class HomeNotifier extends ValueNotifier<HomeData> {
-  HomeNotifier(HomeData value) : super(value);
+class HomeNotifier extends ChangeNotifier {
+  HomeData value;
+
+  HomeNotifier(this.value);
 
   setFontType(FontType fontType) {
     value.fontType = fontType;

@@ -20,6 +20,7 @@ dependencies:
   image: ^2.1.18
   dotted_border: ^1.0.6
   rect_pack: ^0.1.0
+  provider: ^4.3.2+2
 
 dev_dependencies:
   flutter_test:
