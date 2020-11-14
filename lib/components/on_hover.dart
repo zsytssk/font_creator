@@ -16,6 +16,10 @@ class _OnHoverState extends State<OnHover> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onTap: () {
           widget.onTap();
         },

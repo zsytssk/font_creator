@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:font_creator/home/bottom_bar/button_with_icon.dart';
 import 'package:font_creator/components/radio_label.dart';
-import 'package:font_creator/components/inherited_value_listener.dart';
+import 'package:font_creator/home/bottom_bar/button_with_icon.dart';
 import 'package:font_creator/home/home_model.dart';
 import 'package:font_creator/utils/toast.dart';
+import 'package:provider/provider.dart';
 
 const textStyle = TextStyle(fontSize: 12);
 
@@ -12,9 +12,8 @@ class BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final inheritedWidget =
-        InheritedWidgetOnValueListener.of<HomeData, HomeNotifier>(context);
-    final model = inheritedWidget.model as HomeNotifier;
+    final model = context.watch<HomeNotifier>();
+    ;
     return Row(
       children: [
         Container(

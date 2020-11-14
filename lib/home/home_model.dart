@@ -5,18 +5,10 @@ import 'package:path/path.dart';
 
 enum FontType { XML, TEXT }
 
-class HomeData {
-  List<FileItem> fileList = [];
-  int fontSize = 20;
-  FontType fontType = FontType.XML;
-  int space = 2;
+class HomeNotifier extends ChangeNotifier {
+  HomeData value;
 
-  @override
-  toString() => 'filelist: $fileList, fontSize: $fontSize, fontType: $fontType';
-}
-
-class HomeNotifier extends ValueNotifier<HomeData> {
-  HomeNotifier(HomeData value) : super(value);
+  HomeNotifier(this.value);
 
   setFontType(FontType fontType) {
     value.fontType = fontType;
@@ -63,6 +55,16 @@ class HomeNotifier extends ValueNotifier<HomeData> {
     value.fileList.clear();
     notifyListeners();
   }
+}
+
+class HomeData {
+  List<FileItem> fileList = [];
+  int fontSize = 20;
+  FontType fontType = FontType.XML;
+  int space = 2;
+
+  @override
+  toString() => 'filelist: $fileList, fontSize: $fontSize, fontType: $fontType';
 }
 
 class FileItem {
