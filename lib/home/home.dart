@@ -33,7 +33,6 @@ class _MyHomePageState extends State<MyHomePage> {
           body: InheritedWidgetOnValueListener(
               model: homeNotifier,
               builder: (BuildContext context, HomeData model, _) {
-                print('test:> $model');
                 return Container(
                   child: Column(children: [
                     Container(
