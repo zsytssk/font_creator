@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' as Material;
-import 'package:file_chooser/file_chooser.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:image/image.dart';
 import 'dart:async';
 import 'dart:io';
@@ -12,24 +12,32 @@ import 'package:font_creator/utils/genXml.dart';
 
 import '../home/home_model.dart';
 
-pickOpenFiles() {
-  return showOpenPanel(
-    allowsMultipleSelection: true,
-    allowedFileTypes: [
-      FileTypeFilterGroup(label: 'image', fileExtensions: ['png', 'jpg']),
-    ],
-  ).then((val) {
-    return val.paths;
-  });
+pickOpenFiles() async {
+  final res = await FilePicker.platform.pickFiles(
+    type: FileType.custom,
+    allowedExtensions: ['jpg', 'png'],
+  );
+
+  final arr = [];
+  for (final file in res.files) {
+    print(file.name);
+    arr.add(file.name);
+  }
+
+  return arr;
 }
 
-Future<List<String>> pickSaveFile(String fileType, {String filename}) {
-  return showSavePanel(
-    suggestedFileName: filename,
-    allowedFileTypes: [
-      FileTypeFilterGroup(label: 'image', fileExtensions: [fileType]),
-    ],
-  ).then((result) => result.paths);
+Future<String> pickSaveFile(FileType fileType, {String filename}) {
+  return FilePicker.platform.saveFile(
+      dialogTitle: 'Please select an output file:',
+      fileName: filename,
+      type: fileType);
+  // return showSavePanel(
+  //   suggestedFileName: filename,
+  //   allowedFileTypes: [
+  //     FileTypeFilterGroup(label: 'image', fileExtensions: [fileType]),
+  //   ],
+  // ).then((result) => result.paths);
 }
 
 combine(HomeData model) async {
@@ -58,15 +66,14 @@ combine(HomeData model) async {
     copyInto(mergedImage, item['img'], dstX: rectItem.x, dstY: rectItem.y);
   }
 
-  final filenames = (await pickSaveFile('png'));
+  final saveFilename = (await pickSaveFile(FileType.image));
 
-  if (filenames == null && filenames.length > 0) {
+  if (saveFilename == null && saveFilename.length > 0) {
     return;
   }
 
-  final filePath = filenames[0];
-  final dir = dirname(filePath);
-  var filename = basenameWithoutExtension(filePath);
+  final dir = dirname(saveFilename);
+  var filename = basenameWithoutExtension(saveFilename);
 
   final xml = genXml(
       items: items,
@@ -81,7 +88,7 @@ combine(HomeData model) async {
 
   /** macos 智能保存用户选中的文件，所以必须两次选中文件 （我不知道有什么其他方法）*/
   if (Platform.isMacOS) {
-    final filenames = (await pickSaveFile('fnt', filename: filename));
+    final filenames = (await pickSaveFile(FileType.any, filename: filename));
     if (filenames == null && filenames.length > 0) {
       return;
     }

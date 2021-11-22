@@ -11,16 +11,12 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^0.1.3
-  file_chooser:
-    git:
-      url: git://github.com/google/flutter-desktop-embedding.git
-      path: plugins/file_chooser
-      ref: master
-  image: ^2.1.18
-  dotted_border: ^1.0.6
+  cupertino_icons: ^1.0.4
+  file_picker: ^4.2.4
+  image: ^3.0.8
+  dotted_border: ^2.0.0+1
   rect_pack: ^0.1.0
-  provider: ^4.3.2+2
+  provider: ^6.0.1
 
 dev_dependencies:
   flutter_test:
