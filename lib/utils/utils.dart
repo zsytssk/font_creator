@@ -15,6 +15,7 @@ import 'package:archive/archive_io.dart';
 pickOpenFiles() async {
   final res = await FilePicker.platform.pickFiles(
     type: FileType.custom,
+    allowMultiple: true,
     allowedExtensions: ['jpg', 'png'],
   );
 
