@@ -83,7 +83,10 @@ class BottomBar extends StatelessWidget {
                                 textAlign: TextAlign.center,
                                 controller: TextEditingController()
                                   ..text = model.value.space.toString(),
-                                decoration: InputDecoration(),
+                                decoration: InputDecoration(
+                                  contentPadding:
+                                      const EdgeInsets.only(bottom: 18, top: 0),
+                                ),
                                 keyboardType: TextInputType.number,
                                 onChanged: (value) {
                                   model.setSpace(int.parse(value));
