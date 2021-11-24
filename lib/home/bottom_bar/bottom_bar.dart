@@ -85,7 +85,7 @@ class BottomBar extends StatelessWidget {
                                   ..text = model.value.space.toString(),
                                 decoration: InputDecoration(
                                   contentPadding:
-                                      const EdgeInsets.only(bottom: 18, top: 0),
+                                      const EdgeInsets.only(bottom: 20, top: 0),
                                 ),
                                 keyboardType: TextInputType.number,
                                 onChanged: (value) {
