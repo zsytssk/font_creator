@@ -9,6 +9,8 @@ import 'dart:html' as HTML;
 import 'package:font_creator/utils/genXml.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../home/home_model.dart';
+import 'package:archive/archive.dart';
+import 'package:archive/archive_io.dart';
 
 pickOpenFiles() async {
   final res = await FilePicker.platform.pickFiles(
@@ -29,12 +31,6 @@ Future<String> pickSaveFile(FileType fileType, {String filename}) {
       dialogTitle: 'Please select an output file:',
       fileName: filename,
       type: fileType);
-  // return showSavePanel(
-  //   suggestedFileName: filename,
-  //   allowedFileTypes: [
-  //     FileTypeFilterGroup(label: 'image', fileExtensions: [fileType]),
-  //   ],
-  // ).then((result) => result.paths);
 }
 
 combine(HomeData model) async {
@@ -63,8 +59,10 @@ combine(HomeData model) async {
     copyInto(mergedImage, item['img'], dstX: rectItem.x, dstY: rectItem.y);
   }
 
-  // final saveFilename = (await pickSaveFile(FileType.image));
-  final saveFilename = 'test';
+  String saveFilename = 'test';
+  if (!kIsWeb) {
+    saveFilename = (await pickSaveFile(FileType.image));
+  }
 
   if (saveFilename == null && saveFilename.length > 0) {
     return;
@@ -82,19 +80,43 @@ combine(HomeData model) async {
       fileName: filename);
 
   final imgPath = join(dir, '$filename.png');
-  await saveImgFile(imgPath, encodePng(mergedImage));
+  final fntPath = join(dir, '$filename.fnt');
 
-  /** macos 智能保存用户选中的文件，所以必须两次选中文件 （我不知道有什么其他方法）*/
-  if (!kIsWeb) {
-    final filenames = (await pickSaveFile(FileType.any, filename: filename));
-    if (filenames == null && filenames.length > 0) {
-      return;
-    }
-    final filePath = filenames[0];
-    filename = basenameWithoutExtension(filePath);
-  }
-  final xmlPath = join(dir, '$filename.fnt');
-  await saveTextFile(xmlPath, xml);
+  final imgByte = encodePng(mergedImage);
+  final fntByte = utf8.encode(xml);
+  var encoder = ZipEncoder();
+  var archive = Archive();
+  ArchiveFile archiveImg = ArchiveFile.stream(
+    imgPath,
+    imgByte.length,
+    imgByte,
+  );
+  ArchiveFile archiveFnt = ArchiveFile.stream(
+    fntPath,
+    fntByte.length,
+    fntByte,
+  );
+  archive.addFile(archiveImg);
+  archive.addFile(archiveFnt);
+  final outputStream = OutputStream(
+    byteOrder: LITTLE_ENDIAN,
+  );
+  final bytes = encoder.encode(archive,
+      level: Deflate.BEST_COMPRESSION, output: outputStream);
+  saveZipFile('download.zip', bytes);
+  // await saveImgFile(imgPath, encodePng(mergedImage));
+
+  // /** macos 智能保存用户选中的文件，所以必须两次选中文件 （我不知道有什么其他方法）*/
+  // if (!kIsWeb) {
+  //   final filenames = (await pickSaveFile(FileType.any, filename: filename));
+  //   if (filenames == null && filenames.length > 0) {
+  //     return;
+  //   }
+  //   final filePath = filenames[0];
+  //   filename = basenameWithoutExtension(filePath);
+  // }
+  // final xmlPath = join(dir, '$filename.fnt');
+  // await saveTextFile(xmlPath, xml);
 }
 
 saveImgFile(String path, List<int> content) async {
@@ -126,6 +148,22 @@ saveTextFile(String path, String content) async {
       file = await file.create();
     }
     return file.writeAsBytesSync(utf8.encode(content));
+  }
+}
+
+saveZipFile(String path, List<int> content) async {
+  if (kIsWeb) {
+    final blob = HTML.Blob([content]);
+    final url = HTML.Url.createObjectUrlFromBlob(blob);
+    final anchorElement = HTML.AnchorElement(href: url);
+    anchorElement.download = path;
+    anchorElement.click();
+  } else {
+    var file = File(path);
+    if (!await file.exists()) {
+      file = await file.create();
+    }
+    return file.writeAsBytesSync(content);
   }
 }
 
