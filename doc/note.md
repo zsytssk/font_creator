@@ -41,4 +41,8 @@ testIsolate() async {
     isolate = null;
   });
 }
+
+<!-- 4 -->
+
+compute方法
 ```
