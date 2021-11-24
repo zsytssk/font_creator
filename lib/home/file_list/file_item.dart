@@ -48,8 +48,8 @@ class _FileItemState extends State<FileItem> {
           child: Container(
             padding: const EdgeInsets.all(8.0),
             child: ListTile(
-              leading: Image.file(
-                File(widget.file.path),
+              leading: Image.memory(
+                widget.file.path.bytes,
                 width: 60,
                 height: 60,
               ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:font_creator/utils/utils.dart';
+import 'package:image/image.dart';
 import 'dart:async';
 import 'package:path/path.dart';
 
@@ -26,7 +28,8 @@ class HomeNotifier extends ChangeNotifier {
 
     notifyListeners();
 
-    await loadImg(files[0]).then((img) => value.fontSize = img.height.round());
+    final img = decodeImage(files[0].bytes);
+    value.fontSize = img.height.round();
   }
 
   removeFile(FileItem file) {
@@ -69,10 +72,10 @@ class HomeData {
 }
 
 class FileItem {
-  String path;
+  PlatformFile path;
   int charcode;
   FileItem({this.path}) {
-    String filename = basename(path);
+    String filename = basename(path.name);
     charcode = filename.codeUnitAt(0);
   }
   setChar(String char) {

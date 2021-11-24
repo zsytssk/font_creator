@@ -1,15 +1,13 @@
-import 'package:flutter/material.dart' as Material;
 import 'package:file_picker/file_picker.dart';
 import 'package:image/image.dart';
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui' as ui;
 import 'package:path/path.dart';
 import 'package:rect_pack/rect_pack.dart';
 import 'dart:convert';
-
+import 'dart:html' as HTML;
 import 'package:font_creator/utils/genXml.dart';
-
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '../home/home_model.dart';
 
 pickOpenFiles() async {
@@ -20,8 +18,7 @@ pickOpenFiles() async {
 
   final arr = [];
   for (final file in res.files) {
-    print(file.name);
-    arr.add(file.name);
+    arr.add(file);
   }
 
   return arr;
@@ -45,7 +42,7 @@ combine(HomeData model) async {
 
   List<InputItem> imgList = [];
   for (final file in model.fileList) {
-    final img = decodeImage(File(file.path).readAsBytesSync());
+    final img = decodeImage(file.path.bytes);
     imgList.add(InputItem(
         item: {'img': img, 'file': file},
         width: img.width + space,
@@ -66,7 +63,8 @@ combine(HomeData model) async {
     copyInto(mergedImage, item['img'], dstX: rectItem.x, dstY: rectItem.y);
   }
 
-  final saveFilename = (await pickSaveFile(FileType.image));
+  // final saveFilename = (await pickSaveFile(FileType.image));
+  final saveFilename = 'test';
 
   if (saveFilename == null && saveFilename.length > 0) {
     return;
@@ -84,10 +82,10 @@ combine(HomeData model) async {
       fileName: filename);
 
   final imgPath = join(dir, '$filename.png');
-  await saveFile(imgPath, encodePng(mergedImage));
+  await saveImgFile(imgPath, encodePng(mergedImage));
 
   /** macos 智能保存用户选中的文件，所以必须两次选中文件 （我不知道有什么其他方法）*/
-  if (Platform.isMacOS) {
+  if (!kIsWeb) {
     final filenames = (await pickSaveFile(FileType.any, filename: filename));
     if (filenames == null && filenames.length > 0) {
       return;
@@ -96,15 +94,39 @@ combine(HomeData model) async {
     filename = basenameWithoutExtension(filePath);
   }
   final xmlPath = join(dir, '$filename.fnt');
-  await saveFile(xmlPath, utf8.encode(xml));
+  await saveTextFile(xmlPath, xml);
 }
 
-saveFile(String path, List<int> content) async {
-  var file = File(path);
-  if (!await file.exists()) {
-    file = await file.create();
+saveImgFile(String path, List<int> content) async {
+  if (kIsWeb) {
+    final base64data = base64Encode(content);
+    final anchorElement =
+        HTML.AnchorElement(href: 'data:image/png;base64,$base64data');
+    anchorElement.download = path;
+    anchorElement.click();
+  } else {
+    var file = File(path);
+    if (!await file.exists()) {
+      file = await file.create();
+    }
+    return file.writeAsBytesSync(content);
   }
-  return file.writeAsBytesSync(content);
+}
+
+saveTextFile(String path, String content) async {
+  if (kIsWeb) {
+    final anchorElement = HTML.AnchorElement(
+        href:
+            '${Uri.dataFromString(content, mimeType: 'text/plain', encoding: utf8)}');
+    anchorElement.download = path;
+    anchorElement.click();
+  } else {
+    var file = File(path);
+    if (!await file.exists()) {
+      file = await file.create();
+    }
+    return file.writeAsBytesSync(utf8.encode(content));
+  }
 }
 
 Future<List<FileSystemEntity>> dirContents(String dirStr) async {
@@ -120,17 +142,5 @@ Future<List<FileSystemEntity>> dirContents(String dirStr) async {
   lister.listen((file) => files.add(file),
       // should also register onError
       onDone: () => completer.complete(files));
-  return completer.future;
-}
-
-Future<ui.Image> loadImg(String path) {
-  final Completer<ui.Image> completer = Completer();
-  final image = Material.FileImage(File(path));
-
-  image.resolve(Material.ImageConfiguration()).addListener(
-      Material.ImageStreamListener((Material.ImageInfo info, bool isSync) {
-    completer.complete(info.image);
-  }));
-
   return completer.future;
 }
