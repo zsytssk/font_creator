@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import '../home/home_model.dart';
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
+import 'package:flutter/foundation.dart';
 
 pickOpenFiles() async {
   final res = await FilePicker.platform.pickFiles(
@@ -45,7 +46,10 @@ combine(HomeData model) async {
         width: img.width + space,
         height: img.height + space));
   }
-  final rect = rectPack(imgList);
+  final rect = await compute(
+    rectPack,
+    imgList,
+  );
   List<XMLItem> items = [];
   final Image mergedImage = Image(rect.width, rect.height);
   for (final rectItem in rect.items) {

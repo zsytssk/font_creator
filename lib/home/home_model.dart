@@ -46,8 +46,11 @@ class HomeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> onCombine() {
-    return combine(this.value);
+  Future<void> onCombine() async {
+    Stopwatch stopwatch = new Stopwatch()..start();
+    final res = await combine(this.value);
+    print('doSomething() executed in ${stopwatch.elapsed}');
+    return res;
   }
 
   setSpace(int space) {
