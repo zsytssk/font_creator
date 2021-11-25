@@ -49,7 +49,7 @@ class HomeNotifier extends ChangeNotifier {
   Future<void> onCombine() async {
     Stopwatch stopwatch = new Stopwatch()..start();
     final res = await combine(this.value);
-    print('doSomething() executed in ${stopwatch.elapsed}');
+    print('doSomething() executed in:> ${stopwatch.elapsed}');
     return res;
   }
 

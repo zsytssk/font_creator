@@ -46,10 +46,11 @@ combine(HomeData model) async {
         width: img.width + space,
         height: img.height + space));
   }
-  final rect = await compute(
-    rectPack,
-    imgList,
-  );
+  // final rect = await compute(
+  //   rectPack,
+  //   imgList,
+  // );
+  final rect = rectPack(imgList);
   List<XMLItem> items = [];
   final Image mergedImage = Image(rect.width, rect.height);
   for (final rectItem in rect.items) {
