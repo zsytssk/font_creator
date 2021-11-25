@@ -4,6 +4,7 @@ import 'package:font_creator/utils/utils.dart';
 import 'package:image/image.dart';
 import 'dart:async';
 import 'package:path/path.dart';
+import 'package:flutter/foundation.dart';
 
 enum FontType { XML, TEXT }
 
@@ -28,8 +29,13 @@ class HomeNotifier extends ChangeNotifier {
 
     notifyListeners();
 
-    final img = decodeImage(files[0].bytes);
-    value.fontSize = img.height.round();
+    if (kIsWeb) {
+      final img = decodeImage(files[0].bytes);
+      value.fontSize = img.height.round();
+    } else {
+      await loadImg(files[0])
+          .then((img) => value.fontSize = img.height.round());
+    }
   }
 
   removeFile(FileItem file) {

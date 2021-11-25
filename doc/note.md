@@ -1,3 +1,11 @@
+## 2021-11-25 20:35:13
+
+new Directory(appDocDirectory.path+'/'+'dir').create(recursive: true)
+// The created directory is returned as a Future.
+.then((Directory directory) {
+print('Path of New Dir: '+directory.path);
+});
+
 ## 2021-11-25 09:32:10
 
 - 0:00:13.260399
