@@ -4,14 +4,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart' as Material;
 import 'package:image/image.dart' as IMG;
 
-saveFile(String path, List<int> content) async {
-  final blob = Blob([content]);
-  final url = Url.createObjectUrlFromBlob(blob);
-  final anchorElement = AnchorElement(href: url);
-  anchorElement.download = path;
-  anchorElement.click();
-}
-
 Future<IMG.Image> genImgFromPlatformFile(PlatformFile file) async {
   return IMG.decodeImage(file.bytes);
 }
@@ -23,4 +15,12 @@ Material.Image genImgWidgetFromPlatformFile(
     width: width,
     height: height,
   );
+}
+
+saveFile(String path, List<int> content) async {
+  final blob = Blob([content]);
+  final url = Url.createObjectUrlFromBlob(blob);
+  final anchorElement = AnchorElement(href: url);
+  anchorElement.download = path;
+  anchorElement.click();
 }

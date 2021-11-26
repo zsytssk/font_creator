@@ -14,28 +14,6 @@ import '../home/home_model.dart';
 import '../platform/fileUtilsNative.dart'
     if (dart.library.html) '../platform/fileUtilsWeb.dart';
 
-pickOpenFiles() async {
-  final res = await FilePicker.platform.pickFiles(
-    type: FileType.custom,
-    allowMultiple: true,
-    allowedExtensions: ['jpg', 'png'],
-  );
-
-  final arr = [];
-  for (final file in res.files) {
-    arr.add(file);
-  }
-
-  return arr;
-}
-
-Future<String> pickSaveFile(FileType fileType, {String filename}) {
-  return FilePicker.platform.saveFile(
-      dialogTitle: 'Please select an output file:',
-      fileName: filename,
-      type: fileType);
-}
-
 combine(HomeData model) async {
   final space = model.space;
   Stopwatch stopwatch = new Stopwatch()..start();
@@ -132,4 +110,26 @@ Future<List<FileSystemEntity>> dirContents(String dirStr) async {
       // should also register onError
       onDone: () => completer.complete(files));
   return completer.future;
+}
+
+pickOpenFiles() async {
+  final res = await FilePicker.platform.pickFiles(
+    type: FileType.custom,
+    allowMultiple: true,
+    allowedExtensions: ['jpg', 'png'],
+  );
+
+  final arr = [];
+  for (final file in res.files) {
+    arr.add(file);
+  }
+
+  return arr;
+}
+
+Future<String> pickSaveFile(FileType fileType, {String filename}) {
+  return FilePicker.platform.saveFile(
+      dialogTitle: 'Please select an output file:',
+      fileName: filename,
+      type: fileType);
 }
