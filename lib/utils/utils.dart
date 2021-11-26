@@ -89,7 +89,6 @@ combine(HomeData model) async {
   final fntPath = join(dir, '$filename.fnt');
 
   print('combine() executed in:>3.5 ${stopwatch.elapsed}');
-  // print(mergedImage.data);
   final imgByte = encodePng(mergedImage);
   print('combine() executed in:>3.6 ${stopwatch.elapsed}');
   final fntByte = utf8.encode(xml);
