@@ -1,12 +1,11 @@
-import 'dart:io';
-
-import '../../platform/fileUtilsNative.dart'
-    if (dart.library.html) '../../platform/fileUtilsWeb.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:font_creator/components/on_hover_image.dart';
 import 'package:font_creator/home/home_model.dart' as Model;
 import 'package:provider/provider.dart';
+
+import '../../platform/fileUtilsNative.dart'
+    if (dart.library.html) '../../platform/fileUtilsWeb.dart';
 
 class FileItem extends StatefulWidget {
   final Model.FileItem file;

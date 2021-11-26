@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:font_creator/utils/utils.dart';
 import 'dart:async';
-import 'package:path/path.dart';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:font_creator/utils/utils.dart';
+import 'package:path/path.dart';
+
 import '../platform/fileUtilsNative.dart'
     if (dart.library.html) '../platform/fileUtilsWeb.dart';
 

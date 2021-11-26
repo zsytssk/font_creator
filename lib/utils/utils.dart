@@ -1,18 +1,18 @@
-import 'package:flutter/material.dart' as Material;
-import 'package:file_picker/file_picker.dart';
-import 'package:image/image.dart';
 import 'dart:async';
-import 'dart:io';
-import 'dart:ui' as ui;
-import 'package:path/path.dart';
-import 'package:rect_pack/rect_pack.dart';
 import 'dart:convert';
-import '../platform/fileUtilsNative.dart'
-    if (dart.library.html) '../platform/fileUtilsWeb.dart';
-import 'package:font_creator/utils/genXml.dart';
-import '../home/home_model.dart';
+import 'dart:io';
+
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:font_creator/utils/genXml.dart';
+import 'package:image/image.dart';
+import 'package:path/path.dart';
+import 'package:rect_pack/rect_pack.dart';
+
+import '../home/home_model.dart';
+import '../platform/fileUtilsNative.dart'
+    if (dart.library.html) '../platform/fileUtilsWeb.dart';
 
 pickOpenFiles() async {
   final res = await FilePicker.platform.pickFiles(

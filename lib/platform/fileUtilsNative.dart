@@ -1,8 +1,9 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart' as Material;
 import 'package:image/image.dart' as IMG;
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
-import 'package:flutter/material.dart' as Material;
 
 saveFile(String path, List<int> content) async {
   if (Platform.isIOS) {
