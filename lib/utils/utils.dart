@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as Material;
 import 'package:file_picker/file_picker.dart';
 import 'package:image/image.dart';
@@ -132,17 +131,5 @@ Future<List<FileSystemEntity>> dirContents(String dirStr) async {
   lister.listen((file) => files.add(file),
       // should also register onError
       onDone: () => completer.complete(files));
-  return completer.future;
-}
-
-Future<ui.Image> loadImg(String path) {
-  final Completer<ui.Image> completer = Completer();
-  final image = Material.FileImage(File(path));
-
-  image.resolve(Material.ImageConfiguration()).addListener(
-      Material.ImageStreamListener((Material.ImageInfo info, bool isSync) {
-    completer.complete(info.image);
-  }));
-
   return completer.future;
 }
