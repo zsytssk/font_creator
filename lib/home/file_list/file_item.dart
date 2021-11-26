@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import '../../platform/fileUtilsNative.dart'
+    if (dart.library.html) '../../platform/fileUtilsWeb.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:font_creator/components/on_hover_image.dart';
 import 'package:font_creator/home/home_model.dart' as Model;
 import 'package:provider/provider.dart';
-import 'package:flutter/foundation.dart';
 
 class FileItem extends StatefulWidget {
   final Model.FileItem file;
@@ -49,17 +50,8 @@ class _FileItemState extends State<FileItem> {
           child: Container(
             padding: const EdgeInsets.all(8.0),
             child: ListTile(
-              leading: kIsWeb
-                  ? Image.memory(
-                      widget.file.path.bytes,
-                      width: 60,
-                      height: 60,
-                    )
-                  : Image.file(
-                      File(widget.file.path.path),
-                      width: 60,
-                      height: 60,
-                    ),
+              leading: genImgWidgetFromPlatformFile(
+                  widget.file.platform_file, 60, 60),
               title: Align(
                 alignment: Alignment.centerLeft,
                 child: Container(

@@ -7,14 +7,12 @@ import 'dart:ui' as ui;
 import 'package:path/path.dart';
 import 'package:rect_pack/rect_pack.dart';
 import 'dart:convert';
-// import 'dart:html' as HTML;
+import '../platform/fileUtilsNative.dart'
+    if (dart.library.html) '../platform/fileUtilsWeb.dart';
 import 'package:font_creator/utils/genXml.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import '../home/home_model.dart';
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter/foundation.dart';
 
 pickOpenFiles() async {
   final res = await FilePicker.platform.pickFiles(
@@ -40,24 +38,20 @@ Future<String> pickSaveFile(FileType fileType, {String filename}) {
 
 combine(HomeData model) async {
   final space = model.space;
-
-  print('test:>1');
+  Stopwatch stopwatch = new Stopwatch()..start();
   List<InputItem> imgList = [];
+  print('combine() executed in:>0 ${stopwatch.elapsed}');
   for (final file in model.fileList) {
-    final img = decodeImage(
-        kIsWeb ? file.path.bytes : File(file.path.path).readAsBytesSync());
+    final img = await genImgFromPlatformFile(file.platform_file);
 
     imgList.add(InputItem(
         item: {'img': img, 'file': file},
         width: img.width + space,
         height: img.height + space));
   }
-  // final rect = await compute(
-  //   rectPack,
-  //   imgList,
-  // );
-  print('test:>2');
+  print('combine() executed in:>1 ${stopwatch.elapsed}');
   final rect = rectPack(imgList);
+  print('combine() executed in:>2 ${stopwatch.elapsed}');
   List<XMLItem> items = [];
   final Image mergedImage = Image(rect.width, rect.height);
   for (final rectItem in rect.items) {
@@ -72,18 +66,15 @@ combine(HomeData model) async {
     copyInto(mergedImage, item['img'], dstX: rectItem.x, dstY: rectItem.y);
   }
 
-  print('test:>3');
   String saveFilename = 'test';
 
-  print('test:>3.1');
   if (saveFilename == null && saveFilename.length > 0) {
     return;
   }
-
+  print('combine() executed in:>3 ${stopwatch.elapsed}');
   final dir = dirname(saveFilename);
   var filename = basenameWithoutExtension(saveFilename);
 
-  print('test:>3.2');
   final xml = genXml(
       items: items,
       fontSize: model.fontSize,
@@ -95,8 +86,12 @@ combine(HomeData model) async {
   final imgPath = join(dir, '$filename.png');
   final fntPath = join(dir, '$filename.fnt');
 
+  print('combine() executed in:>3.5 ${stopwatch.elapsed}');
   final imgByte = encodePng(mergedImage);
+  print('combine() executed in:>3.6 ${stopwatch.elapsed}');
   final fntByte = utf8.encode(xml);
+
+  print('combine() executed in:>3.7 ${stopwatch.elapsed}');
   var encoder = ZipEncoder();
   var archive = Archive();
   ArchiveFile archiveImg = ArchiveFile.stream(
@@ -114,61 +109,12 @@ combine(HomeData model) async {
   final outputStream = OutputStream(
     byteOrder: LITTLE_ENDIAN,
   );
-
-  print('test:>4');
+  print('combine() executed in:>3.8 ${stopwatch.elapsed}');
   final bytes = encoder.encode(archive,
       level: Deflate.BEST_COMPRESSION, output: outputStream);
-  await saveZipFile('download.zip', bytes);
-  // await saveImgFile(imgPath, encodePng(mergedImage));
-
-  // /** macos 智能保存用户选中的文件，所以必须两次选中文件 （我不知道有什么其他方法）*/
-  // if (!kIsWeb) {
-  //   final filenames = (await pickSaveFile(FileType.any, filename: filename));
-  //   if (filenames == null && filenames.length > 0) {
-  //     return;
-  //   }
-  //   final filePath = filenames[0];
-  //   filename = basenameWithoutExtension(filePath);
-  // }
-  // final xmlPath = join(dir, '$filename.fnt');
-  // await saveTextFile(xmlPath, xml);
-}
-
-saveImgFile(String path, List<int> content) async {
-  var file = File(path);
-  if (!await file.exists()) {
-    file = await file.create();
-  }
-  return file.writeAsBytesSync(content);
-}
-
-saveTextFile(String path, String content) async {
-  var file = File(path);
-  if (!await file.exists()) {
-    file = await file.create();
-  }
-  return file.writeAsBytesSync(utf8.encode(content));
-}
-
-saveZipFile(String path, List<int> content) async {
-  // if (kIsWeb) {
-  //   final blob = HTML.Blob([content]);
-  //   final url = HTML.Url.createObjectUrlFromBlob(blob);
-  //   final anchorElement = HTML.AnchorElement(href: url);
-  //   anchorElement.download = path;
-  //   anchorElement.click();
-  // } else {
-  // }
-  if (Platform.isIOS) {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    print('test:>5:>${appDocDir.path}');
-
-    var file = File('${appDocDir.path}/${path}');
-    if (!await file.exists()) {
-      file = await file.create();
-    }
-    return file.writeAsBytesSync(content);
-  }
+  print('combine() executed in:>4 ${stopwatch.elapsed}');
+  await saveFile('download.zip', bytes);
+  print('combine() executed in:>5 ${stopwatch.elapsed}');
 }
 
 Future<List<FileSystemEntity>> dirContents(String dirStr) async {

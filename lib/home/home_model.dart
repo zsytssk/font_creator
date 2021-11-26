@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:font_creator/utils/utils.dart';
-import 'package:image/image.dart';
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:flutter/foundation.dart';
+import '../platform/fileUtilsNative.dart'
+    if (dart.library.html) '../platform/fileUtilsWeb.dart';
 
 enum FontType { XML, TEXT }
 
@@ -23,19 +24,14 @@ class HomeNotifier extends ChangeNotifier {
 
     if (files.length > 0) {
       for (final file in files) {
-        value.fileList.add(FileItem(path: file));
+        value.fileList.add(FileItem(platform_file: file));
       }
     }
 
     notifyListeners();
 
-    if (kIsWeb) {
-      final img = decodeImage(files[0].bytes);
-      value.fontSize = img.height.round();
-    } else {
-      await loadImg(files[0])
-          .then((img) => value.fontSize = img.height.round());
-    }
+    final img = await genImgFromPlatformFile(files[0]);
+    value.fontSize = img.height.round();
   }
 
   removeFile(FileItem file) {
@@ -45,7 +41,7 @@ class HomeNotifier extends ChangeNotifier {
 
   setFileChar(String path, String char) {
     for (final file in value.fileList) {
-      if (file.path == path) {
+      if (file.platform_file == path) {
         file.setChar(char);
       }
     }
@@ -53,9 +49,8 @@ class HomeNotifier extends ChangeNotifier {
   }
 
   Future<void> onCombine() async {
-    Stopwatch stopwatch = new Stopwatch()..start();
+    // final res = await compute(combine, this.value);
     final res = await combine(this.value);
-    print('doSomething() executed in:> ${stopwatch.elapsed}');
     return res;
   }
 
@@ -81,10 +76,10 @@ class HomeData {
 }
 
 class FileItem {
-  PlatformFile path;
+  PlatformFile platform_file;
   int charcode;
-  FileItem({this.path}) {
-    String filename = basename(path.name);
+  FileItem({this.platform_file}) {
+    String filename = basename(platform_file.name);
     charcode = filename.codeUnitAt(0);
   }
   setChar(String char) {
