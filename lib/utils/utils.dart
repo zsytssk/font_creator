@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as Material;
 import 'package:file_picker/file_picker.dart';
 import 'package:image/image.dart';
@@ -49,6 +50,7 @@ combine(HomeData model) async {
         width: img.width + space,
         height: img.height + space));
   }
+
   print('combine() executed in:>1 ${stopwatch.elapsed}');
   final rect = rectPack(imgList);
   print('combine() executed in:>2 ${stopwatch.elapsed}');
@@ -87,6 +89,7 @@ combine(HomeData model) async {
   final fntPath = join(dir, '$filename.fnt');
 
   print('combine() executed in:>3.5 ${stopwatch.elapsed}');
+  // print(mergedImage.data);
   final imgByte = encodePng(mergedImage);
   print('combine() executed in:>3.6 ${stopwatch.elapsed}');
   final fntByte = utf8.encode(xml);
