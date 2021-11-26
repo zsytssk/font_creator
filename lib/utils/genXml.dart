@@ -1,12 +1,3 @@
-class XMLItem {
-  int id;
-  int x;
-  int y;
-  int width;
-  int height;
-  XMLItem({this.id, this.x, this.y, this.width, this.height});
-}
-
 String genXml(
     {int fontSize, int spacing, int width, height, String fileName, items}) {
   final tpl = '''<?xml version="1.0"?>
@@ -32,4 +23,13 @@ String genXml(
   }
 
   return tpl.replaceFirst('{items}', items_str);
+}
+
+class XMLItem {
+  int id;
+  int x;
+  int y;
+  int width;
+  int height;
+  XMLItem({this.id, this.x, this.y, this.width, this.height});
 }
