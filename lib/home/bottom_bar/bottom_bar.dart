@@ -13,7 +13,6 @@ class BottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = context.watch<HomeNotifier>();
-    ;
     return Row(
       children: [
         Container(

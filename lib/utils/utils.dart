@@ -18,6 +18,8 @@ combine(HomeData model) async {
   final space = model.space;
   Stopwatch stopwatch = new Stopwatch()..start();
   List<InputItem> imgList = [];
+
+  await sleep(5);
   print('combine() executed in:>0 ${stopwatch.elapsed}');
   for (final file in model.fileList) {
     final img = await genImgFromPlatformFile(file.platform_file);
@@ -132,4 +134,8 @@ Future<String> pickSaveFile(FileType fileType, {String filename}) {
       dialogTitle: 'Please select an output file:',
       fileName: filename,
       type: fileType);
+}
+
+sleep(int num) {
+  return new Future.delayed(Duration(seconds: num));
 }
