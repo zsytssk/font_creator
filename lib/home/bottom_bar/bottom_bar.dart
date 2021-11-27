@@ -7,8 +7,16 @@ import 'package:provider/provider.dart';
 
 const textStyle = TextStyle(fontSize: 12);
 
-class BottomBar extends StatelessWidget {
+class BottomBar extends StatefulWidget {
   BottomBar();
+
+  @override
+  _BottomBarState createState() => _BottomBarState();
+}
+
+class _BottomBarState extends State<BottomBar> {
+  bool loadingGenerateFont = false;
+  bool loadingUploadFont = false;
 
   @override
   Widget build(BuildContext context) {
@@ -124,8 +132,15 @@ class BottomBar extends StatelessWidget {
                                 child: SizedBox(
                                     height: 40,
                                     child: ButtonWithIcon(
+                                        loading: loadingGenerateFont,
                                         onPressed: () {
+                                          setState(() {
+                                            loadingGenerateFont = true;
+                                          });
                                           model.onCombine().then((_val) {
+                                            setState(() {
+                                              loadingGenerateFont = false;
+                                            });
                                             tip(context, '合并图片成功');
                                           });
                                         },
