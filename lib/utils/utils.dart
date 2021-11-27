@@ -19,7 +19,6 @@ combine(HomeData model) async {
   Stopwatch stopwatch = new Stopwatch()..start();
   List<InputItem> imgList = [];
 
-  await sleep(5);
   print('combine() executed in:>0 ${stopwatch.elapsed}');
   for (final file in model.fileList) {
     final img = await genImgFromPlatformFile(file.platform_file);
